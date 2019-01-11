@@ -9,17 +9,23 @@ $(document).ready(function() {
 
    //modal functions
    $(".js-open-modal").click(function(){
-     $('.modal').show();
+     var modal = $('.modal');
+     modal.modal('toggle');
+     modal.show();
  });
 
  $(".js-close-modal").click(function(){
-   $(".modal").hide();
+   var modal = $('.modal');
+   modal.modal('toggle');
+   modal.hide();
  });
 
  //if you click on anything except the modal itself or the "open modal" link, close the modal
  $(document).click(function(event) {
    if (!$(event.target).closest(".modal,.js-open-modal").length) {
-     $("body").find(".modal").hide();
+     var modal = $("body").find(".modal");
+     modal.modal('toggle');
+     modal.hide();
    }
  });
 
@@ -60,7 +66,7 @@ $(document).ready(function() {
          formElement += headerArr[i] + ':\t';
          formElement += '<input type="text" name="'+ i +'"value="' + textArr[i] + '">\n</div>\n';
        });
-       
+
        formElement += '<input type="hidden" name="headList" id="headList" value="'+ promise.responseJSON.message +'">';
        formElement += '<input type="submit">\n</div></div>';
 
