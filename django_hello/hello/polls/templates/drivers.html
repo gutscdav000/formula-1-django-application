@@ -75,11 +75,12 @@
                                     <th> dob </th>
                                     <th> nationality </th>
                                     <th> url </th>
+                                    <th> update</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {% for driver in drivers %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{driver.driverid}} </td>
                                      <td> {{driver.driverref}} </td>
                                      <td> {{driver.number}} </td>
@@ -89,6 +90,10 @@
                                      <td> {{driver.dob}} </td>
                                      <td> {{driver.nationality}} </td>
                                      <td> {{driver.url}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
 

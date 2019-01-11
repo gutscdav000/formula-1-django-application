@@ -15,7 +15,9 @@ from models import *
 from forms import TableForm
 
 #python imports
-import math, json
+import math, json, re, datetime
+#third party
+from dateutil import parser
 
 PAGE_LEN = 1000.00
 
@@ -26,13 +28,6 @@ PAGE_LEN = 1000.00
 # Create your views here.
 def index(request):
 
-    # if request.method == 'POST':
-    #     form = TableForm(request.POST)
-    #     if form.is_valid():
-    #         return render(request, 'index.html', {"form" : form})
-    # else:x
-    #     form = TableForm()
-    #     return render(request, 'index.html', {"form" : form})
     raw_tables = raw_query()
     # decode raw queryset objects
     tables = [rawQSet[0].decode('utf-8') for rawQSet in raw_tables]
@@ -287,17 +282,59 @@ def update_form(request):
     path = request.POST['request_path']
     headList = request.POST['headList'].split(',')
 
-
     #put form arguments in a list
     queryDict = dict(request.POST.iterlists())
-    keyLst = sorted([(key, queryDict.get(key)[0]) for key in queryDict.keys() if key.isdigit()])
+
+    #keyLst = sorted([(key, queryDict.get(key)[0]) for key in queryDict.keys() if key.isdigit()])
+    keyLst = []
+    for key in queryDict.keys():
+        if key.isdigit():
+            value = queryDict.get(key)[0]
+            if re.search('\S+[.] \d{1,2}, \d{4}|\S+ \d{1,2}, \d{4}', value):
+                dt = parser.parse(value)
+                value = '{0}-{1:02}-{2:02}'.format(dt.year, dt.month, dt.day )
+                print "date: ", value
+
+            keyLst.append((key, value))
+
+    keyLst = sorted(keyLst)
 
     dbUpDict = {}
+    print keyLst
     for i in range(len(keyLst)):
         print ("***pair: ", headList[i], keyLst[i][1])
         dbUpDict[headList[i]] = keyLst[i][1]
 
-    Circuits.objects.filter(circuitid = int(keyLst[0][1])).update(**dbUpDict)
+
+
+
+
+    if path == '/polls/circuits/':
+        Circuits.objects.filter(circuitid = int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/constructor_results/':
+        ConstructorResults.objects.filter(constructorresultsid=int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/constructor_standings/':
+        ConstructorStandings.objects.filter(constructorstandingsid==int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/constructors/':
+        Constructors.objects.filter(constructorid==int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/driver_standings/':
+        DriverStandings.objects.filter(driverstandingsid==int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/drivers/':
+        Drivers.objects.filter(driverid=int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/lap_times/':
+        LapTimes.ojbects.filter(id==int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/pit_stops/':
+        PitStops.objects.filter(id=int(keyLst[0][1])).update(**dbUpDict)
+    elif path =='/polls/qualifying/':
+        Qualifying.filter(qualifyid=int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/races/':
+       Races.objects.filter(raceid=int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/results/':
+        Results.objects.filter(id=int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/status/':
+        Status.objects.filter(statusid=int(keyLst[0][1])).update(**dbUpDict)
+    elif path == '/polls/seasons/':
+       Seasons.objects.filter(year=int(keyLst[0][1])).update(**dbUpDict)
 
 
     if path != None:
@@ -306,10 +343,38 @@ def update_form(request):
         raise Http500()
 
 def get_table_headers(request):
-    table_headers = ['circuitid', 'circuitref', 'name', 'location', 'country', 'lat', 'lng', 'alt', 'url']
-    response_data = {}
+    table_headers = {
+            '/polls/circuits/' : \
+            ['circuitid', 'circuitref', 'name', 'location', 'country', 'lat', 'lng', 'alt', 'url'],
+            '/polls/constructor_results/' : \
+            ['constructorresultsid', 'raceid', 'constructorid', 'points', 'status', ],
+            '/polls/constructor_standings/' : \
+            ['constructorstandingsid', 'raceid', 'constructorid', 'points', 'position', 'positiontext','wins'],
+            '/polls/constructors/' : \
+            ['constructorid', 'constructorref', 'name', 'nationality', 'url'],
+            '/polls/driver_standings/' : \
+            ['driverstandingsid', 'raceid', 'driverid', 'points', 'position', 'positiontext', 'wins'],
+            '/polls/drivers/' : \
+            ['driverid', 'driverref', 'number', 'code', 'forename', 'surname', 'dob', 'nationality', 'url'],
+            '/polls/lap_times/' : \
+            ['id', 'raceid', 'driverid', 'lap', 'position', 'time', 'milliseconds'],
+            '/polls/pit_stops/' : \
+            ['id', 'raceid', 'driverid', 'lap', 'time', 'duration', 'milliseconds'],
+            '/polls/qualifying/' : \
+            ['qualifyid', 'raceid', 'driverid', 'constructorid', 'number', 'position', 'q1', 'q2', 'q3'],
+           '/polls/races/' : \
+           ['raceid', 'year', 'round', 'circuitid', 'name', 'date', 'time', 'url'],
+           '/polls/results/' : \
+           ['resultid', 'raceid', 'driverid', 'constructorid', 'number', 'grid', 'position', 'potitiontext', 'positionorder', 'points', 'laps', 'time', 'milliseconds', 'fastestlap', 'rank', 'fastestlaptime', 'fastestlapspeed', 'statusid'],
+           '/polls/status/' : \
+           ['statusid', 'status'],
+           '/polls/seasons/' : \
+           ['year', 'url'],
 
+        }
+    print('********', request.GET['path'])
+    response_data = {}
     response_data['result'] = 'Success'
-    response_data['message'] = table_headers
+    response_data['message'] = table_headers.get(request.GET['path'])
 
     return HttpResponse(json.dumps(response_data), content_type = 'polls/json')

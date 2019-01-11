@@ -42,14 +42,17 @@ $(document).ready(function() {
     textArr.splice($.inArray("Open Popup", textArr), 1);
     textArr.splice($.inArray("", textArr), 1);
 
+    // load modal form once ajax call completes
     promise.then(function() {
       headerArr = promise.responseJSON.message;
       $(promise.responseJSON.message).each(function(i){
         console.log('head: ' + i +'\t' + promise.responseJSON.message[i]);
        });
 
+
        formElement = '<div class="dynamic-form"><div class="row">';
        $(textArr).each(function(i) {
+
          formElement += '<div class="column">'
          textArr[i] = $.trim(textArr[i]);
          console.log(i + ': ' + textArr[i]);
@@ -57,6 +60,7 @@ $(document).ready(function() {
          formElement += headerArr[i] + ':\t';
          formElement += '<input type="text" name="'+ i +'"value="' + textArr[i] + '">\n</div>\n';
        });
+       
        formElement += '<input type="hidden" name="headList" id="headList" value="'+ promise.responseJSON.message +'">';
        formElement += '<input type="submit">\n</div></div>';
 
@@ -69,6 +73,7 @@ $(document).ready(function() {
 
 });
 
+// function grabs table headers to populate modal window field with labels
 function getTableHeaders(request_path) {
   return $.ajax({
     type : "GET",
