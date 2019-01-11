@@ -73,11 +73,12 @@
                                       <th> Q1</th>
                                       <th> Q2 </th>
                                       <th> Q3 </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for q in quals %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{q.qualifyid}} </td>
                                      <td> {{q.raceid.raceid}} </td>
                                      <td> {{q.driverid.driverid}} </td>
@@ -87,6 +88,10 @@
                                      <td> {{q.q1}} </td>
                                      <td> {{q.q2}} </td>
                                      <td> {{q.q3}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

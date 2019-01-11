@@ -72,11 +72,12 @@
                                       <th> date </th>
                                       <th> time</th>
                                       <th> url </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for race in races %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{race.raceid}} </td>
                                      <td> {{race.year}} </td>
                                      <td> {{race.round}} </td>
@@ -85,6 +86,10 @@
                                      <td> {{race.date}} </td>
                                      <td> {{race.time}} </td>
                                      <td> {{race.url}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

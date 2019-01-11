@@ -82,11 +82,12 @@
                                       <th> fastest lap time</th>
                                       <th> fastest lap speed</th>
                                       <th> status id</th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for r in res %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{r.resultid}} </td>
                                      <td> {{r.raceid.raceid}} </td>
                                      <td> {{r.driverid.driverid}} </td>
@@ -105,6 +106,10 @@
                                      <td> {{r.fastestlaptime}} </td>
                                      <td> {{r.fastestlapspeed}} </td>
                                      <td> {{r.statusid}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

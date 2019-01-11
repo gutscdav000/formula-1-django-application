@@ -288,12 +288,38 @@ def update_form(request):
     #keyLst = sorted([(key, queryDict.get(key)[0]) for key in queryDict.keys() if key.isdigit()])
     keyLst = []
     for key in queryDict.keys():
+        # only numerical keys have form submission values
         if key.isdigit():
             value = queryDict.get(key)[0]
+            # if it's a date correctly format it.
             if re.search('\S+[.] \d{1,2}, \d{4}|\S+ \d{1,2}, \d{4}', value):
+                #print "SEARCH *** ", re.search('\S+[.] \d{1,2}, \d{4}|\S+ \d{1,2}, \d{4}', value).string
                 dt = parser.parse(value)
                 value = '{0}-{1:02}-{2:02}'.format(dt.year, dt.month, dt.day )
                 print "date: ", value
+
+            # correctly format times
+            elif value == 'noon' or re.search('\d{1,2} \S.\S\.', value):
+                print "VAALUE ",  value
+                if value == 'noon':
+                    value = '12:00:00'
+                elif 'a.m.' in re.search('\S\.\S\.', value).string.lower():
+                    print "AAAAAAAAAMMMMMM"
+                    if ':' in value:
+                        value = value[5:] + ':00'
+                    else:
+                        value = value[:2].strip() + ':00:00'
+                elif 'p.m.' in re.search('\S\.\S\.', value).string.lower():
+                    if ':' in value:
+                        manip_time = int(value.split(':')[0].strip()) + 12
+                        value = str(manip_time) + value [1:4] + ':00'
+                    else:
+                        manip_time = int(value[:2].strip()) + 12
+                        value =  str(manip_time)+ ':00:00'
+
+
+            elif value == "":
+                value = "NULL"
 
             keyLst.append((key, value))
 
@@ -302,7 +328,7 @@ def update_form(request):
     dbUpDict = {}
     print keyLst
     for i in range(len(keyLst)):
-        print ("***pair: ", headList[i], keyLst[i][1])
+        print ("pair: ", headList[i], keyLst[i][1])
         dbUpDict[headList[i]] = keyLst[i][1]
 
 
@@ -314,19 +340,19 @@ def update_form(request):
     elif path == '/polls/constructor_results/':
         ConstructorResults.objects.filter(constructorresultsid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/constructor_standings/':
-        ConstructorStandings.objects.filter(constructorstandingsid==int(keyLst[0][1])).update(**dbUpDict)
+        ConstructorStandings.objects.filter(constructorstandingsid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/constructors/':
-        Constructors.objects.filter(constructorid==int(keyLst[0][1])).update(**dbUpDict)
+        Constructors.objects.filter(constructorid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/driver_standings/':
-        DriverStandings.objects.filter(driverstandingsid==int(keyLst[0][1])).update(**dbUpDict)
+        DriverStandings.objects.filter(driverstandingsid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/drivers/':
         Drivers.objects.filter(driverid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/lap_times/':
-        LapTimes.ojbects.filter(id==int(keyLst[0][1])).update(**dbUpDict)
+        LapTimes.objects.filter(id=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/pit_stops/':
         PitStops.objects.filter(id=int(keyLst[0][1])).update(**dbUpDict)
     elif path =='/polls/qualifying/':
-        Qualifying.filter(qualifyid=int(keyLst[0][1])).update(**dbUpDict)
+        Qualifying.objects.filter(qualifyid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/races/':
        Races.objects.filter(raceid=int(keyLst[0][1])).update(**dbUpDict)
     elif path == '/polls/results/':
@@ -359,7 +385,7 @@ def get_table_headers(request):
             '/polls/lap_times/' : \
             ['id', 'raceid', 'driverid', 'lap', 'position', 'time', 'milliseconds'],
             '/polls/pit_stops/' : \
-            ['id', 'raceid', 'driverid', 'lap', 'time', 'duration', 'milliseconds'],
+            ['id', 'raceid', 'driverid', 'stop', 'lap', 'time', 'duration', 'milliseconds'],
             '/polls/qualifying/' : \
             ['qualifyid', 'raceid', 'driverid', 'constructorid', 'number', 'position', 'q1', 'q2', 'q3'],
            '/polls/races/' : \

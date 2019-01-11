@@ -71,11 +71,12 @@
                                       <th> position </th>
                                       <th> time </th>
                                       <th> milliseconds </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for lap in laps %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{lap.id}} </td>
                                      <td> {{lap.raceid.raceid}} </td>
                                      <td> {{lap.driverid.driverid}} </td>
@@ -83,6 +84,10 @@
                                      <td> {{lap.position}} </td>
                                      <td> {{lap.time}} </td>
                                      <td> {{lap.milliseconds}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

@@ -71,11 +71,12 @@
                                       <th> position </th>
                                       <th> position text </th>
                                       <th> wins </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for con_stnd in const_stnd_lst %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{con_stnd.constructorstandingsid}} </td>
                                      <td> {{con_stnd.raceid.raceid}} </td>
                                      <td> {{con_stnd.constructorid.constructorid}} </td>
@@ -83,6 +84,10 @@
                                      <td> {{con_stnd.position}} </td>
                                      <td>  {{con_stnd.positiontext}} </td>
                                      <td>  {{con_stnd.wins}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

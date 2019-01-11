@@ -69,16 +69,21 @@
                                       <th> name </th>
                                       <th> nationality </th>
                                       <th> url </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for const in constructors %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{const.constructorid}} </td>
                                      <td> {{const.constructorref}} </td>
                                      <td> {{const.name}} </td>
                                      <td> {{const.nationality}} </td>
                                      <td> {{const.url}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

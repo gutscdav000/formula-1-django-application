@@ -71,11 +71,12 @@
                                       <th> position </th>
                                       <th> position text </th>
                                       <th> wins </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for ds in driver_stdngs %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{ds.driverstandingsid}} </td>
                                      <td> {{ds.raceid.raceid}} </td>
                                      <td> {{ds.driverid.driverid}} </td>
@@ -83,6 +84,10 @@
                                      <td> {{ds.position}} </td>
                                      <td> {{ds.positiontext}} </td>
                                      <td> {{ds.wins}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>

@@ -72,11 +72,12 @@
                                       <th> time </th>
                                       <th> duration </th>
                                       <th> milliseconds </th>
+                                      <th> Update </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                   {% for stop in pit_stops %}
-                                   <tr>
+                                   <tr data-row={{ forloop.counter }}>
                                      <td> {{stop.id}} </td>
                                      <td> {{stop.raceid.raceid}} </td>
                                      <td> {{stop.driverid.driverid}} </td>
@@ -85,6 +86,10 @@
                                      <td> {{stop.time}} </td>
                                      <td> {{stop.duration}} </td>
                                      <td> {{stop.milliseconds}} </td>
+                                     <td> <a class="js-open-modal">
+                                            Update
+                                          </a>
+                                    </td>
                                    </tr>
                                   {% endfor %}
                                 </tbody>
