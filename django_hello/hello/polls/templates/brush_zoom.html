@@ -75,11 +75,11 @@ var area2 = d3.area()
     .curve(d3.curveMonotoneX)
     .x(function(d) {
       console.log('a2: dt ' + d[0]);
-      return x2( d[0]); })
+      return x2( new Date(d[0])); })
     .y0(height2)
     .y1(function(d) {
       console.log('a2: pc ' +   d[1]);
-      return y2( d[1]); });
+      return y2( +(d[1])); });
 
 console.log(area2);
 
