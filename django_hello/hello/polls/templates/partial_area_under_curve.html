@@ -21,11 +21,11 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 var data = {{js_data|safe}};
-
-
+console.log('data: ');
 console.log(data);
+
 // for(var i = 0; i < data.length; i++) {
-//   console.log(data[i][0] +','+ data[i][1]);
+//   console.log(data[i]);
 // }
 
 var svg = d3.select("svg"),
@@ -34,8 +34,6 @@ var svg = d3.select("svg"),
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
     height2 = +svg.attr("height") - margin2.top - margin2.bottom;
-
-
 
 var parseDate = d3.timeParse("%b %Y");
 
@@ -58,30 +56,25 @@ var zoom = d3.zoom()
     .extent([[0, 0], [width, height]])
     .on("zoom", zoomed);
 
-
 var area = d3.area()
     .curve(d3.curveMonotoneX)
     .x(function(d) {
-      console.log('a1 dt: ' + new Date(d[0]));
-      return x(new Date(d[0])); })
+      //console.log('a1 dt: ' + new Date(d.split(',')[0]);
+      return x(new Date(d.split(',')[0])); })
     .y0(height)
     .y1(function(d) {
-      console.log('a1 pc: ' + d[1]);
-      return y(+(d[1])); });
-
-console.log(area);
+      //console.log('a1 pc: ' + +(d.split(',')[1]));
+      return y( +(d.split(',')[1])); });
 
 var area2 = d3.area()
     .curve(d3.curveMonotoneX)
     .x(function(d) {
-      console.log('a2: dt ' + d[0]);
-      return x2( d[0]); })
+      //console.log('a2: dt ' + new Date(d.split(',')[0]));
+      return x2( new Date(d.split(',')[0])); })
     .y0(height2)
     .y1(function(d) {
-      console.log('a2: pc ' +   d[1]);
-      return y2( d[1]); });
-
-console.log(area2);
+      //console.log('a2: pc ' +   +(d.split(',')[1]));
+      return y2( +(d.split(',')[1])); });
 
 svg.append("defs").append("clipPath")
     .attr("id", "clip")
@@ -98,15 +91,14 @@ var context = svg.append("g")
     .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
 
- //d3.csv("sp500.csv", type, function(error, data) {
- //   if (error) throw error;
+
 
 x.domain(d3.extent(data, function(d) {
-   //console.log('dt ' + new Date(d));
-   return new Date(d[0]); }));
+   console.log('dt ' + new Date(d.split(',')[0]));
+   return new Date(d.split(',')[0]); }));
 y.domain([0, d3.max(data, function(d) {
-  //console.log('pc ' + +(d));
-  return +(d[1]); })]);
+  console.log('pc ' + +(d.split(',')[1]));
+  return +(d.split(',')[1]); })]);
 x2.domain(x.domain());
 y2.domain(y.domain());
 
@@ -146,7 +138,7 @@ svg.append("rect")
     .attr("height", height)
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .call(zoom);
-//});
+
 
 function brushed() {
   if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom

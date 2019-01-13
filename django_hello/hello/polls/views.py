@@ -410,10 +410,31 @@ def test_d3js(request):
     return render(request, 'test_d3js.html', {})
 
 def brush_zoom(request):
-    print os.getcwd()
+    # get csv data
     with open('polls/static/data/d3js_data.csv', 'r') as csvfile:
         data = csv.reader(csvfile)
-        js_data = [row[0].strip() + ',' + row[1].strip() for row in data]
+        js_data = [(row[0].strip(),float(row[1])) for row in data]
+
+
     print js_data
 
     return render(request, 'brush_zoom.html', {'js_data' : json.dumps(js_data)})
+
+def partial_area_under_curve(request):
+    # get csv data
+    with open('polls/static/data/d3js_data.csv', 'r') as csvfile:
+        data = csv.reader(csvfile)
+        js_data = [(row[0].strip(),float(row[1])) for row in data]
+
+
+
+
+    # divide data
+    path1 = []
+    path2 = []
+    path3 = []
+
+
+
+
+    return render(request, 'partial_area_under_curve.html', {'js_data' : js_data})
