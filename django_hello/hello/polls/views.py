@@ -15,7 +15,7 @@ from models import *
 from forms import TableForm
 
 #python imports
-import math, json, re, datetime
+import math, json, re, datetime, csv, os
 #third party
 from dateutil import parser
 
@@ -404,3 +404,16 @@ def get_table_headers(request):
     response_data['message'] = table_headers.get(request.GET['path'])
 
     return HttpResponse(json.dumps(response_data), content_type = 'polls/json')
+
+
+def test_d3js(request):
+    return render(request, 'test_d3js.html', {})
+
+def brush_zoom(request):
+    print os.getcwd()
+    with open('polls/static/data/d3js_data.csv', 'r') as csvfile:
+        data = csv.reader(csvfile)
+        js_data = [row[0].strip() + ',' + row[1].strip() for row in data]
+    print js_data
+
+    return render(request, 'brush_zoom.html', {'js_data' : json.dumps(js_data)})

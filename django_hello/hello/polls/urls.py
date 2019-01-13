@@ -30,4 +30,8 @@ urlpatterns = [
     url(r'^update_form/$', views.update_form, name = 'update_form'),
     url(r'^get_table_headers/$', views.get_table_headers, name = 'get_table_headers'),
 
+    # testing js lib
+    url(r'^test_d3js/$', views.test_d3js, name = 'test_d3js'),
+    url(r'^brush_zoom/$', views.brush_zoom, name = 'brush_zoom'),
+
 ]
