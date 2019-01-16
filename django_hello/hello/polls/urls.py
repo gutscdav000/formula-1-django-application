@@ -34,5 +34,7 @@ urlpatterns = [
     url(r'^test_d3js/$', views.test_d3js, name = 'test_d3js'),
     url(r'^brush_zoom/$', views.brush_zoom, name = 'brush_zoom'),
     url(r'^partial_area_under_curve/$', views.partial_area_under_curve, name = 'partial_area_under_curve'),
+    url(r'^test_stacked/$', views.test_stacked, name = 'test_stacked'),
+    url(r'^test_bar/$', views.test_bar, name = 'test_bar'),
 
 ]

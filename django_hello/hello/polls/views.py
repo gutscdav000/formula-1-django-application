@@ -423,13 +423,44 @@ def partial_area_under_curve(request):
     # get csv data
     with open('polls/static/data/d3js_data.csv', 'r') as csvfile:
         data = csv.reader(csvfile)
-        js_data = [(row[0].strip(),float(row[1]) / 3, float(row[1]) * 2 / 3, float(row[1])) for row in data]
+        #js_data = [(row[0].strip(),float(row[1]) / 3, float(row[1]) * 2 / 3, float(row[1])) for row in data]
+        js_data = []
+        for row in data:
+            tmp = { str('date') : None, str('1/3'): None, str('2/3'):None, str('3/3'):None}
+            tmp['date'] = row[0]
+            tmp['third1'] = float(row[1]) / 3
+            tmp['third2'] = float(row[1]) / 3
+            tmp['third3'] = float(row[1]) / 3
+            js_data.append(tmp)
+            print(str(row[0]) + ',' + str(tmp['third1']) + ',' + str(tmp['third1']) + ',' + str(tmp['third1']))
 
-    print js_data
 
-    # divide data
-    path1 = []
-    path2 = []
-    path3 = []
+    #print js_data
+
 
     return render(request, 'partial_area_under_curve.html', {'js_data' : json.dumps(js_data)})
+
+
+def test_stacked(request):
+    # get csv data
+    with open('polls/static/data/d3js_data.csv', 'r') as csvfile:
+        data = csv.reader(csvfile)
+        #js_data = [(row[0].strip(),float(row[1]) / 3, float(row[1]) * 2 / 3, float(row[1])) for row in data]
+        js_data = []
+        for row in data:
+            tmp = { str('date') : None, str('1/3'): None, str('2/3'):None, str('3/3'):None}
+            tmp['date'] = row[0]
+            tmp['third1'] = float(row[1]) / 3
+            tmp['third2'] = float(row[1]) / 3
+            tmp['third3'] = float(row[1]) / 3
+            js_data.append(tmp)
+
+    return render(request, 'test_stacked.html', {'js_data' : json.dumps(js_data)})
+
+
+def test_bar(request):
+    nested_data = [['2018-12-01',1865888],['2018-11-01',8320333],['2018-10-01',6306650],['2018-08-01',4345753],['2018-08-01',5434262],['2018-07-01',3559842],['2018-06-01',2919333],['2018-05-01',3014123],['2018-04-01',3339187],['2018-03-01',2996403],['2018-02-01',3205078],['2018-01-01',3349592]]
+    #nested_data = [['December',1865888],['November',8320333],['October',6306650],['September',4345753],['August',5434262],['July',3559842],['June',2919333],['May',3014123],['April',3339187],['March',2996403],['February',3205078],['January',3349592]]
+    for item in nested_data:
+        item[0] = str(item[0])
+    return render(request, 'test_bar.html', {'nested_data' : nested_data})

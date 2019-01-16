@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3.js Essential Training for Data Scientists</title>
+		<!-- <link rel="stylesheet" type="text/css" href="style.css" > -->
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        }
+
+        line {
+        stroke: red;
+        }
+
+        path {
+        stroke: black;
+        /*fill: none;*/
+        stroke-width: 2px;
+        }
+
+        g.group0 path,
+        g.group0 circle {
+        stroke: red;
+        fill: none;
+        }
+
+        g.hidden line,
+        g.hidden path {
+        display: none;
+        }
+
+        g.tick line {
+        stroke: blue;
+        }
+
+        g.tick text {
+        font-size: 12px;
+        fill: purple;
+        }
+
+    </style>
+		<!-- <script type="text/javascript" src="d3.v4.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+	</head>
+
+	<body>
+		<script>
+    //var parseDate = d3.timeParse("%Y");
+
+
+
+
+    var height = 200;
+    var width = 500;
+    var margin = {left: 50, right: 50, top: 40, bottom:0};
+
+    var data = {{js_data|safe}};
+
+
+    data = data.map(function(d) {
+      return {'date'   : new Date(d.date),
+              'third1' : +d.third1,
+              'third2' : +d.third2, 'third3' : +d.third3};
+    });
+
+
+
+    var x = d3.scaleTime()
+              .domain(d3.extent(data,function(d){return d.date;}))
+              .range([0,width]);
+    var y = d3.scaleLinear()
+              .domain([0,d3.max(data,function(d){ return d.third1+d.third2+d.third3; })])
+              .range([height,0]);
+
+    var categories = ['third1','third2','third3'];
+
+    var stack = d3.stack().keys(categories);
+
+    var area = d3.area()
+                  .x(function(d,i){ return x(d.data.date);})
+                  .y0(function(d){ return y(d[0]);})
+                  .y1(function(d){ return y(d[1]);});
+
+    var svg = d3.select("body").append("svg").attr("width","100%").attr("height","100%");
+    var chartGroup = svg.append("g").attr("transform","translate("+margin.left+","+margin.top+")");
+
+    var stacked = stack(data);
+
+    chartGroup.append("g").attr("class","x axis")
+                          .attr("transform","translate(0,"+height+")")
+                          .call(d3.axisBottom(x));
+    chartGroup.append("g").attr("class","y axis")
+                          .call(d3.axisLeft(y).ticks(5));
+
+    // chartGroup.selectAll("path.area")
+    //   .data(stacked)
+    //   .enter().append("path")
+    //             .attr("class","area")
+    //             .attr("d",function(d){ return area(d); });
+
+    var colors = ["red", "yellow", "blue"];
+
+
+
+    chartGroup.selectAll("g.area")
+      .data(stacked)
+      .enter().append("g")
+                .attr("class","area")
+      .append("path")
+                .attr("class","area ")
+                .style("fill", function(d, i) { return colors[i];})
+                .attr("d",function(d){ return area(d); });
+
+    </script>
+  </body>
+
+</html>
