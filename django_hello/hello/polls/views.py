@@ -447,15 +447,20 @@ def test_stacked(request):
         data = csv.reader(csvfile)
         #js_data = [(row[0].strip(),float(row[1]) / 3, float(row[1]) * 2 / 3, float(row[1])) for row in data]
         js_data = []
+        js_header = [str('third1'), str('third2'), str('third3')]
+        print(js_header)
         for row in data:
-            tmp = { str('date') : None, str('1/3'): None, str('2/3'):None, str('3/3'):None}
-            tmp['date'] = row[0]
-            tmp['third1'] = float(row[1]) / 3
-            tmp['third2'] = float(row[1]) / 3
-            tmp['third3'] = float(row[1]) / 3
+            tmp = []
+
+            tmp.append(str(row[0]))
+            tmp.append(str(float(row[1]) / 3))
+            tmp.append(str(float(row[1]) / 3))
+            tmp.append(str(float(row[1]) / 3))
+
             js_data.append(tmp)
 
-    return render(request, 'test_stacked.html', {'js_data' : json.dumps(js_data)})
+    #print js_data
+    return render(request, 'test_stacked.html', {'js_data' : js_data, 'js_headers' : js_header})
 
 
 def test_bar(request):
