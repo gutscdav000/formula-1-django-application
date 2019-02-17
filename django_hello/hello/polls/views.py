@@ -397,8 +397,9 @@ def get_table_headers(request):
            '/polls/seasons/' : \
            ['year', 'url'],
 
-        }
-    print('********', request.GET['path'])
+    }
+    print("request: ", request)
+    #print('********', request.GET['path'])
     response_data = {}
     response_data['result'] = 'Success'
     response_data['message'] = table_headers.get(request.GET['path'])
@@ -459,7 +460,7 @@ def test_stacked(request):
 
             js_data.append(tmp)
 
-    #print js_data
+    print js_data
     return render(request, 'test_stacked.html', {'js_data' : js_data, 'js_headers' : js_header})
 
 

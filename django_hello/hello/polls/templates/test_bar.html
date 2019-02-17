@@ -61,8 +61,16 @@ div.tooltip {
 
 <script type="text/javascript">
 
-  var monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  //monthArr[+(d[0].split("-")[1])]
+  var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+  // function formatDate(dt) {
+  //   var monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  //   var dtArr = dt.split('-');
+  //
+  //   return monthArr[dtArr[1] - 1] + ' ' + dtArr[0];
+  // }
+
   var data = {{nested_data|safe}};
   data = data.map(x => [monthArr[+(x[0].split("-")[1] - 1)] , x[1]]).reverse();
 

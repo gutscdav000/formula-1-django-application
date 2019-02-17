@@ -40,6 +40,23 @@
         fill: purple;
         }
 
+				 div.tooltip {
+				    position: absolute;
+				    text-align: left;
+				    width: auto;
+				    height: auto;
+				    padding: 8px;
+				    font: 12px sans-serif;
+						font-weight: bold;
+				    background: black;
+				    border-radius: 0px;
+				    pointer-events: none;
+				    color: white;
+
+				}
+
+
+
     </style>
 		<!-- <script type="text/javascript" src="d3.v4.js"></script> -->
     <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
@@ -60,8 +77,6 @@
     var data = {{js_data|safe}};
 		var headers = {{js_headers|safe}};
 
-		console.log(headers);
-		console.log(data);
 
 		// loading data since data stream isn't json
 		var clean_data = []
@@ -74,39 +89,11 @@
 				tmp_sum += +data[i][j];
 			}
 			tmp_json['sum'] = +tmp_sum;
-			console.log(typeof JSON.stringify(tmp_json));
 			clean_data.push(tmp_json);
-			//clean_data.push(JSON.stringify(tmp_json));
 		}
 		console.log(clean_data);
+		console.log(headers);
 
-
-    // data = data.map(function(d) {
-    //   return {'date'   : new Date(d.date),
-    //           'third1' : +d.third1,
-    //           'third2' : +d.third2,
-		// 					 'third3' : +d.third3,
-		// 					 'sum' : +d.third1 + +d.third2 + +d.third3
-		// 				 };
-    // });
-
-		//console.log("attribs:  " +  JSON.parse(data[0]));
-		// for (let key of data[0].keys()) {
-		// 	console.log(key);
-		// }
-		// let json_data = JSON.stringify(data[0]);
-		// var json_out = JSON.parse(json_data , function (key, value)
-    //                {
-    //                   //if (typeof value === ‘string’)
-		// 									if(key !== 'date' && key !== 'sum')
-    //                   {
-		// 										console.log(key);
-    //                     return value;
-    //                   }
-    //                });
-		// console.log(json_out);
-		//
-		// console.log(data);
 
     var x = d3.scaleTime()
               .domain(d3.extent(clean_data,function(d){return d.date;}))
@@ -115,6 +102,7 @@
               .domain([0,d3.max(clean_data,function(d){ return d.sum; })])
               .range([height,0]);
 
+
     var categories = ['third1','third2','third3'];
 
     var stack = d3.stack().keys(categories);
@@ -122,7 +110,6 @@
     var area = d3.area()
                   .x(function(d,i){ return x(d.data.date);})
                   .y0(function(d){
-										console.log('d0: ' + d[0]);
 										return y(d[0]);})
                   .y1(function(d){ return y(d[1]);});
 
@@ -137,15 +124,22 @@
     chartGroup.append("g").attr("class","y axis")
                           .call(d3.axisLeft(y).ticks(5));
 
-    // chartGroup.selectAll("path.area")
-    //   .data(stacked)
-    //   .enter().append("path")
-    //             .attr("class","area")
-    //             .attr("d",function(d){ return area(d); });
 
-    //var colors = ["red", "yellow", "blue"];
-		var colors = d3.scaleOrdinal(d3.schemeCategory10);
+    chartGroup.selectAll("path.area")
+      .data(stacked)
+      .enter().append("path")
+                .attr("class","area")
+								.attr("id", function(d, i) { return i.toString()})
+                .attr("d",function(d){ return area(d); });
 
+
+		var paths = chartGroup.selectAll("path.area");
+
+		var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+		var tooltip = d3.select("body").append("div")
+						.attr("class", "tooltip")
+						.style("opacity", 0);
 
 
     chartGroup.selectAll("g.area")
@@ -154,9 +148,59 @@
                 .attr("class","area")
       .append("path")
                 .attr("class","area ")
-								.style("fill", function(d) {return colors(d[0]);})
-                //.style("fill", function(d, i) { return colors[i];})
-                .attr("d",function(d){ return area(d); });
+								.style("fill", function(d) {
+									return color(d[0]);})
+									//return "rgb(215, 215, 215)";})
+                .attr("d",function(d){ return area(d); })
+			.on("mouseover", function(d) {
+					//console.log('dddddd: ' + d);
+					d3.select(this).style("fill", function(d) {
+						return "rgb(215, 215, 215)";})
+						//return color(d[0]); })
+						// *** use if you pass in amount array to JS script ***
+						// var amt_head = getHeader(d);
+						// tooltip.text(amt_head[0] + ', $' + amt_head[1]);
+					tooltip.text(getHeader(d))
+					.style("opacity", 0.8)
+									.style("left", (d3.event.pageX)+ -15 + "px")
+									.style("top", (d3.event.pageY)- 0 + "px");
+			})
+			.on("mouseout", function(d) {
+					tooltip.style("opacity", 0);
+					//d3.select(this).style("fill", "#ccc");
+					d3.select(this).style("fill", function(d) {return color(d[0]);});
+			});
+
+
+			function getHeader(dataArr) {
+				var ret = null;
+
+				paths.each(function(d, i) {
+					if (dataArr === d) {
+						//console.log('match!' + i);
+						//console.log('header: ' + headers[i]);
+						ret = headers[i]
+						return headers[i];}
+
+				});
+				return ret;
+			}
+
+
+			// *** use if you pass in amount array to JS script ***
+			// function getHeader(dataArr) {
+			// 	var ret = null;
+			//
+			// 	paths.each(function(d, i) {
+			// 		if (dataArr === d) {
+			// 			//console.log('match!' + i);
+			// 			//console.log('header: ' + headers[i]);
+			// 			ret = [ headers[i] , amount[i] ];
+			// 		}
+			//
+			// 	});
+			// 	return ret;
+			// }
 
     </script>
   </body>

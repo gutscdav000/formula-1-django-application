@@ -81,6 +81,7 @@ $(document).ready(function() {
 
 // function grabs table headers to populate modal window field with labels
 function getTableHeaders(request_path) {
+  console.log(request_path);
   return $.ajax({
     type : "GET",
     url : "/polls/get_table_headers/",
