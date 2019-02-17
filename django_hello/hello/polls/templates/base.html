@@ -388,12 +388,12 @@
               modal header
               <a href="#" class="js-close-modal">X</a>
             </div>
-            <p>
+            
               <form method="post" action="/polls/update_form/">
                 {% csrf_token %}
                 <input type="hidden" id="request_path" name="request_path" value="{{request.path}}">
               </form>
-            </p>
+
           </div>
 
 

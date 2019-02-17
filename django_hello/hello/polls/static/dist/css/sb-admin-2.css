@@ -15,6 +15,10 @@ body {
   background-color: white;
 }
 
+label {
+  display: inline-block;
+  text-align: left;
+}
 
 .modal {
   display: none;
@@ -23,15 +27,20 @@ body {
   left: 50%;
   transform:translate(-50%,-50%);
   background: #fff;
-  width: 320px;
-  height: 320px;
+  width: 50%;
+  height: 50%;
   text-align: center;
   box-sizing:border-box;
   box-shadow:0 0 20px rgba(0,0,0,.2);
+  border-radius: 25px;
 
   &.visible {
     display: block;
   }
+}
+
+.modal_row {
+  margin: 5px;
 }
 
 .modal__header {
@@ -145,8 +154,11 @@ body {
   padding-left: 52px;
 }
 @media (min-width: 768px) {
-  
 
+  .modal {
+    max-width: 400px;
+    max-height: 500px;
+  }
   .sidebar {
     z-index: 1;
     position: absolute;

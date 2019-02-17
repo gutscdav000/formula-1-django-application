@@ -59,12 +59,13 @@ $(document).ready(function() {
        formElement = '<div class="dynamic-form"><div class="row">';
        $(textArr).each(function(i) {
 
-         formElement += '<div class="column">'
+         formElement += '<div class="col-6 modal_row">'
          textArr[i] = $.trim(textArr[i]);
          console.log(i + ': ' + textArr[i]);
-
-         formElement += headerArr[i] + ':\t';
-         formElement += '<input type="text" name="'+ i +'"value="' + textArr[i] + '">\n</div>\n';
+        formElement += '<div class="col-2">';
+        formElement += '<label>' + headerArr[i] + ':\t</label>';
+        formElement += '<input type="text" name="'+ i +'"value="' + textArr[i] + '">\n</div>\n';
+        formElement += '</div>';
        });
 
        formElement += '<input type="hidden" name="headList" id="headList" value="'+ promise.responseJSON.message +'">';
@@ -81,7 +82,6 @@ $(document).ready(function() {
 
 // function grabs table headers to populate modal window field with labels
 function getTableHeaders(request_path) {
-  console.log(request_path);
   return $.ajax({
     type : "GET",
     url : "/polls/get_table_headers/",
